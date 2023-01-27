@@ -7,6 +7,18 @@ orbs:
   # aws-cli: circleci/aws-cli@2.0.3
    aws-cli: circleci/aws-cli@2.0.3
 # Define the jobs we want to run for this project
+commands:
+   # Exercise - Rollback
+   destroy_environment:
+     steps:
+       - run:
+           name: Destroy environment
+           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
+
 jobs:
   initialjob:  # Choose any name, such as `build`
       # The primary container, where your job's commands will run
@@ -16,35 +28,35 @@ jobs:
       - checkout # check out the code in the project directory
       - run: echo "starting" # run the `echo` command
 
-  # createinstance:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Create Cloudformation Stack
-  #         command: |
-  #           aws cloudformation deploy \
-  #             --template-file template.yml \
-  #             --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-  #             --region us-east-1
-
-  configure_infrastructure: 
+  createinstance:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - add_ssh_keys:
-              # You can get this ID in the section where you registered the SSH Key
-              fingerprints: ["6f:1a:8b:0d:d1:0f:6c:6a:a2:ea:13:ad:09:bc:23:0d"] 
       - run:
-          name: Install Ansible
+          name: Create Cloudformation Stack
           command: |
-            apk add --update ansible
-      - run:
-          name: Run Playbook and Configure server
-          command: |
-            ansible-playbook -i inventory.txt main-remote.yml
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
+
+  # configure_infrastructure: 
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #             # You can get this ID in the section where you registered the SSH Key
+  #             fingerprints: ["6f:1a:8b:0d:d1:0f:6c:6a:a2:ea:13:ad:09:bc:23:0d"] 
+  #     - run:
+  #         name: Install Ansible
+  #         command: |
+  #           apk add --update ansible
+  #     - run:
+  #         name: Run Playbook and Configure server
+  #         command: |
+  #           ansible-playbook -i inventory.txt main-remote.yml
 
   smoke_test:
     docker:
@@ -54,12 +66,6 @@ jobs:
       - run:
           name: smoke test
           command: |
-            URL="https://blog.udacity.com/"
-            # Test if website exists
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
               return 1
             fi
       - destroy_environment      
@@ -70,8 +76,16 @@ workflows:
   myWorkflow:
     jobs:
       - initialjob
-      - configure_infrastructure
+      - createinstance
       - smoke_test
       # - createinstance
       #     requires:
       #       -initialjob
+
+
+ # URL="https://blog.udacity.com/"
+            # # Test if website exists
+            # if curl -s --head ${URL} 
+            # then
+            #   return 0
+            # else
