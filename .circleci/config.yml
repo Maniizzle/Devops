@@ -67,7 +67,6 @@ jobs:
           name: smoke test
           command: |
               return 1
-            fi
       - destroy_environment      
 
 # Sequential workflow
