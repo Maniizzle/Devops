@@ -28,7 +28,7 @@ jobs:
   #             --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
   #             --region us-east-1
 
-  configure_infrastructure: 
+  configureinfrastructure: 
   docker:
     - image: 
   steps:
@@ -52,7 +52,7 @@ workflows:
   myWorkflow:
     jobs:
       - initialjob
-      - configure_infrastructure
+      - configureinfrastructure
       # - createinstance
       #     requires:
       #       -initialjob
