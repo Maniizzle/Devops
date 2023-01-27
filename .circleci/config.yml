@@ -52,6 +52,6 @@ workflows:
   myWorkflow:
     jobs:
       - initialjob
-      # - createinstance
+      - createinstance
       #     requires:
       #       -initialjob
