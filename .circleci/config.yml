@@ -75,17 +75,17 @@ jobs:
             - textfile.txt 
 
   promote_to_production:
-  docker:
-    - image: amazon/aws-cli
-  steps:
-    - checkout
-    - run:
-        name: Execute cloudfront.yml
-        command: |
-          aws cloudformation deploy \
-          --template-file cloudfront.yml \
-          --stack-name production-distro \
-          --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Execute cloudfront.yml
+          command: |
+            aws cloudformation deploy \
+            --template-file cloudfront.yml \
+            --stack-name production-distro \
+            --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
 
   # Destroy the previous production version's S3 bucket and CloudFormation stack. 
   clean_up_old_front_end:
@@ -146,7 +146,7 @@ workflows:
           requires:
             - promote_to_production
             - get_last_deployment_id
-            
+
       # - initialjob
       # - createinstance
       # - smoke_test:
