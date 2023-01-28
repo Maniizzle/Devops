@@ -78,9 +78,6 @@ workflows:
       - smoke_test
           requires:
             - createinstance
-      # - createinstance
-      #     requires:
-      #       -initialjob
 
 
  # URL="https://blog.udacity.com/"
