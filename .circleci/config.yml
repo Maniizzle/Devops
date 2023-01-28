@@ -75,8 +75,8 @@ workflows:
     jobs:
       - createinstance
       - smoke_test
-            requires:
-              - createinstance
+          requires: 
+            - createinstance
       - initialjob
 
 
