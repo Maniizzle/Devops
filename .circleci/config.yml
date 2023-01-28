@@ -73,16 +73,8 @@ workflows:
   # Name the workflow
   myWorkflow:
     jobs:
+      - initialjob
       - createinstance
       - smoke_test
-          requires: 
+          requires:
             - createinstance
-      - initialjob
-
-
- # URL="https://blog.udacity.com/"
-            # # Test if website exists
-            # if curl -s --head ${URL} 
-            # then
-            #   return 0
-            # else
