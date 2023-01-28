@@ -3,7 +3,7 @@ Parameters:
   MyBucketName:
     Description: Existing Bucket name
     Type: String
-    default: none
+    Default: none
 
 Resources:
   WebsiteBucket:
