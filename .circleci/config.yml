@@ -73,11 +73,11 @@ workflows:
   # Name the workflow
   myWorkflow:
     jobs:
-      - initialjob
       - createinstance
       - smoke_test
-          requires:
-            - createinstance
+            requires:
+              - createinstance
+      - initialjob
 
 
  # URL="https://blog.udacity.com/"
